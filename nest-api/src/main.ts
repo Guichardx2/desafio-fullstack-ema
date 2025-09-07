@@ -67,8 +67,8 @@ async function bootstrap() {
  */
 function configureSwagger(app: INestApplication){
   const config = new DocumentBuilder()
-  .setTitle('NestJS IAgro API')
-  .setDescription('IAgro API Documentation powered by Guichard')
+  .setTitle('NestJS Chronos API')
+  .setDescription('Chronos API Documentation powered by Guichard')
   .setVersion('1.0')
   .addTag('nestjs')
   .build();
