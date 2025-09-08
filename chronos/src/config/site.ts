@@ -1,4 +1,3 @@
-import { NavbarMenuItem } from "@heroui/navbar";
 
 export type SiteConfig = typeof siteConfig;
 

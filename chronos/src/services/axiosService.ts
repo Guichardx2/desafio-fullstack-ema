@@ -39,11 +39,23 @@ axiosInstance.interceptors.response.use(
         console.error(`Axios Error: ${error.message}`, error.stack);
         if (error.response) {
             console.error(`Status: ${error.response.status} Data: ${JSON.stringify(error.response.data)}`);
+            // If backend provided a message, prefer it so callers can show it
+            const backendMessage = (error.response.data as any)?.message;
+            if (backendMessage) {
+                if (Array.isArray(backendMessage)) {
+                    error.message = backendMessage.join('; ');
+                } else if (typeof backendMessage === 'string') {
+                    error.message = backendMessage;
+                } else {
+                    error.message = String(backendMessage);
+                }
+            }
         } else if (error.request) {
             console.error(`No response received: ${error.request}`);
         }
 
-        return Promise.reject(new Error(error.message));
+        // Preserve the original AxiosError so consumers can inspect response.data
+        return Promise.reject(error);
     }
 );
 

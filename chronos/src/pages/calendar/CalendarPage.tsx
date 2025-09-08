@@ -140,10 +140,7 @@ export default function CalendarPage() {
       console.error("Erro ao salvar evento:", error);
       addToast({
         title: "Erro",
-        description:
-          typeof error === "object" && error !== null && "message" in error
-            ? String((error as { message?: string }).message)
-            : "Ocorreu um erro ao criar o evento.",
+        description: error instanceof Error ? error.message : 'Ocorreu um erro ao criar/atualizar o evento.',
         color: "danger",
       });
     }
@@ -172,10 +169,7 @@ export default function CalendarPage() {
       console.error("Erro ao excluir evento:", error);
       addToast({
         title: "Erro",
-        description:
-          typeof error === "object" && error !== null && "message" in error
-            ? String((error as { message?: string }).message)
-            : "Ocorreu um erro ao excluir o evento.",
+        description: error instanceof Error ? error.message : 'Ocorreu um erro ao excluir o evento.',
         color: "danger",
       });
     }
