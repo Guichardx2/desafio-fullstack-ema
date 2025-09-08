@@ -11,7 +11,7 @@ import { EventsModule } from './events/events.module';
       isGlobal: true,
     }),
     DatabaseModule,
-    EventsModule
+    EventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

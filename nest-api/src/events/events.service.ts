@@ -7,6 +7,9 @@ import Events from "./events.entity";
 import { CreateEventDTO } from "./dtos/create-event.dto";
 import { UpdateEventDTO } from './dtos/update-event.dto';
 
+//Gateway imports
+import { EventProcessingGateway } from './gateways/event-processing.gateway';
+
 @Injectable()
 export class EventsService {
 
@@ -14,6 +17,7 @@ export class EventsService {
 
         @InjectRepository(Events)
         private readonly eventsRepository: Repository<Events>,
+        private readonly eventProcessingGateway: EventProcessingGateway,
 
     ) { }
 
@@ -40,6 +44,10 @@ export class EventsService {
             
             const newEvent = this.eventsRepository.create(eventDto);
             await this.eventsRepository.save(newEvent);
+
+            this.getAll().then(events => {
+                this.eventProcessingGateway.emitEvent(events);
+            });
     
             return {
                 message: 'Evento criado com sucesso',
@@ -62,6 +70,10 @@ export class EventsService {
     
             this.eventsRepository.merge(event, eventDto);
             await this.eventsRepository.save(event);
+
+            this.getAll().then(events => {
+                this.eventProcessingGateway.emitEvent(events);
+            });
     
             return {
                 message: 'Evento atualizado com sucesso!',
@@ -84,6 +96,10 @@ export class EventsService {
             }
     
             await this.eventsRepository.delete(event);
+
+            this.getAll().then(events => {
+                this.eventProcessingGateway.emitEvent(events);
+            });
 
         } catch (error) {
 

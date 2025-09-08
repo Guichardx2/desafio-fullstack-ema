@@ -6,6 +6,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 //App imports
 import { AppModule } from './app.module';
@@ -31,6 +32,9 @@ async function bootstrap() {
 
   //Global Interceptors
   configureGlobalInterceptors(app);
+
+  //WebSockets Config
+  configureWebSockets(app);
   
   //CORS
  const allowedOrigins = [
@@ -117,6 +121,16 @@ function configureGlobalFilters(app: INestApplication) {
  */
 function configureGlobalInterceptors(app: INestApplication) {
   app.useGlobalInterceptors(new SuccessResponseInterceptor());
+}
+
+//WebSockets Configuration
+/**
+ * Configures WebSocket support for the application using Socket.IO.
+ * 
+ * @param app - The NestJS application instance.
+ */
+function configureWebSockets(app: INestApplication) {
+  app.useWebSocketAdapter(new IoAdapter(app));
 }
 
 bootstrap();

@@ -11,10 +11,13 @@ import { EventsController } from './events.controller';
 //Entity imports
 import Events from './events.entity';
 
+//Gateway imports
+import { EventProcessingGateway } from './gateways/event-processing.gateway';
+
 @Module({
   imports: [TypeOrmModule.forFeature([Events])],
   controllers: [EventsController],
-  providers: [EventsService],
+  providers: [EventsService, EventProcessingGateway],
   exports: [EventsService],
 })
 export class EventsModule {}
