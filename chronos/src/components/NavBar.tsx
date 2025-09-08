@@ -11,7 +11,6 @@ import {Image} from "@heroui/image";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import Logo  from "@/assets/images/logo.png";
 
 export const Navbar = () => {
   
@@ -24,7 +23,7 @@ export const Navbar = () => {
             color="foreground"
             href="/"
           >
-            <Image src={Logo} alt="Chronos Logo" className="w-8 h-8 mr-2"/>
+            <Image src={"./public/favicon.png"} alt="Chronos Logo" className="w-8 h-8 mr-2"/>
             <p className="font-bold text-inherit">CHRONOS</p>
           </Link>
         </NavbarBrand>

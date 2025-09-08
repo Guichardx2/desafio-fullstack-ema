@@ -1,19 +1,21 @@
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext, type ReactNode, useMemo } from 'react';
 import { useWebsocket } from '../hooks/useWebsocket';
 import { EventBackend } from '@/types';
 
 interface WebSocketContextType {
-  webSocketEvents: EventBackend | null;
+  webSocketEvents: EventBackend[] | null;
   connected: boolean;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
 
 export const WebSocketProvider = ({ children }: { children: ReactNode }) => {
-  const { data: webSocketEvents, connected } = useWebsocket<EventBackend>();
+  const { data: webSocketEvents, connected } = useWebsocket<EventBackend[]>();
+
+  const value = useMemo(() => ({ webSocketEvents, connected }), [webSocketEvents, connected]);
 
   return (
-    <WebSocketContext.Provider value={{ webSocketEvents, connected }}>
+    <WebSocketContext.Provider value={value}>
       {children}
     </WebSocketContext.Provider>
   );

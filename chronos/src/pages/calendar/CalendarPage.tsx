@@ -64,10 +64,12 @@ export default function CalendarPage() {
   };
 
   const handleEventClick = (arg: any) => {
-    const idString = arg.event.id;
-    const id = Number(idString);
+  // Prefer backend id from groupId or extendedProps; fall back to parsing the id
+  const backendIdStr = arg.event.groupId || arg.event.extendedProps?.backendId || arg.event.id;
+  const id = Number(backendIdStr?.toString().replace(/-(start|end)$/i, ""));
 
-    fetchEvent(id);
+  if (!Number.isFinite(id)) return;
+  fetchEvent(id);
     viewDisclosure.onOpen();
   };
 
@@ -199,16 +201,20 @@ export default function CalendarPage() {
               Array.isArray(currentEvents)
                 ? currentEvents.flatMap((event) => [
                     {
-                      id: String(event.id),
+                      id: `${event.id}-start`,
+                      groupId: String(event.id),
                       title: `${event.title} (Início)`,
                       start: event.startDate,
                       allDay: false,
+                      extendedProps: { backendId: event.id },
                     },
                     {
-                      id: String(event.id),
+                      id: `${event.id}-end`,
+                      groupId: String(event.id),
                       title: `${event.title} (Fim)`,
                       start: event.endDate,
                       allDay: false,
+                      extendedProps: { backendId: event.id },
                     },
                   ])
                 : []
