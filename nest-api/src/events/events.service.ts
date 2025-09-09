@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import Events from "./events.entity";
@@ -27,6 +27,7 @@ export class EventsService {
         @InjectRepository(Events)
         private readonly eventsRepository: Repository<Events>,
         private readonly eventProcessingGateway: EventProcessingGateway,
+        private readonly logger: Logger = new Logger(EventsService.name),
 
     ) { }
 
@@ -76,6 +77,7 @@ export class EventsService {
             
             const newEvent = this.eventsRepository.create(eventDto);
             await this.eventsRepository.save(newEvent);
+            this.logger.debug(`Evento criado com ID ${newEvent.id}`);
 
             this.getAll().then(events => {
                 this.eventProcessingGateway.emitEvent(events);
@@ -113,6 +115,7 @@ export class EventsService {
     
             this.eventsRepository.merge(event, eventDto);
             await this.eventsRepository.save(event);
+            this.logger.debug(`Evento atualizado com ID ${event.id}`);
 
             this.getAll().then(events => {
                 this.eventProcessingGateway.emitEvent(events);
@@ -149,6 +152,7 @@ export class EventsService {
             }
     
             await this.eventsRepository.delete(event);
+            this.logger.debug(`Evento deletado com ID ${event.id}`);
 
             this.getAll().then(events => {
                 this.eventProcessingGateway.emitEvent(events);
