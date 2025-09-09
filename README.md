@@ -26,8 +26,7 @@ cd ./desafio-fullstack-ema
 ````
 Recomendação: instalar o pnpm via npm:
 ```bash
-  npm install  
--g pnpm@latest
+  npm install -g pnpm@latest-10
  ```
 Após isso, instale as dependências com:
 
