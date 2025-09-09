@@ -21,13 +21,14 @@ import { EventProcessingGateway } from './gateways/event-processing.gateway';
  * - Emit real-time updates to clients after mutations.
  */
 export class EventsService {
+    //Logs
+    private readonly logger = new Logger(EventsService.name);
 
     constructor(
 
         @InjectRepository(Events)
         private readonly eventsRepository: Repository<Events>,
         private readonly eventProcessingGateway: EventProcessingGateway,
-        private readonly logger: Logger = new Logger(EventsService.name),
 
     ) { }
 
