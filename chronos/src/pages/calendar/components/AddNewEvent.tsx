@@ -31,6 +31,7 @@ const AddNewEvent = ({
           value={eventFormData?.title ?? ""}
           onChange={(e) => onChangeField("title", e.target.value)}
           errorMessage="Título é obrigatório"
+          maxLength={100}
           required
         />
         <Input
@@ -39,6 +40,7 @@ const AddNewEvent = ({
           value={eventFormData?.description ?? ""}
           onChange={(e) => onChangeField("description", e.target.value)}
           errorMessage="Descrição é obrigatória"
+          maxLength={500}
           required
         />
         <div className="flex w-full flex-1 gap-4">
@@ -83,6 +85,7 @@ const AddNewEvent = ({
           value={eventFormData?.location ?? ""}
           onChange={(e) => onChangeField("location", e.target.value)}
           errorMessage="Local é obrigatório"
+          maxLength={100}
           required
         />
       </Form>

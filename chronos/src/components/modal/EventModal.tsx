@@ -32,7 +32,7 @@ const EventModal = (props: EventModalProps) => {
                   <Button color="danger" variant="light" onPress={onClose}>
                     Fechar
                   </Button>
-                  <Button color="secondary" type="submit" form={props.formId}>
+                  <Button color="secondary" variant="shadow" type="submit" form={props.formId}>
                     Salvar
                   </Button>
                 </>
