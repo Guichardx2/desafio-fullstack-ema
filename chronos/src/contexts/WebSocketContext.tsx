@@ -1,6 +1,6 @@
 import { createContext, useContext, type ReactNode, useMemo } from 'react';
 import { useWebsocket } from '../hooks/useWebsocket';
-import { EventBackend } from '@/types';
+import { EventBackend } from '@/types/props/calendar-page/EventBackendProps';
 
 interface WebSocketContextType {
   webSocketEvents: EventBackend[] | null;

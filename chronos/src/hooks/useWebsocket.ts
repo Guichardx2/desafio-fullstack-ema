@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { io, Socket } from 'socket.io-client';
 
+//Custom hook to manage WebSocket connection and data
 export const useWebsocket = <T = unknown>() => {
   const [data, setData] = useState<T | null>(null);
   const [connected, setConnected] = useState(false);

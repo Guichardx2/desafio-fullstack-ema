@@ -9,6 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
+// WebSocket gateway for real-time event processing
 @WebSocketGateway({ namespace: '/events/data', cors: { origin: '*' } })
 export class EventProcessingGateway implements OnGatewayInit {
   private readonly logger = new Logger(EventProcessingGateway.name);

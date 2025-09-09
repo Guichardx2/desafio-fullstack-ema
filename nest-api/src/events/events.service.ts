@@ -10,7 +10,16 @@ import { UpdateEventDTO } from './dtos/update-event.dto';
 //Gateway imports
 import { EventProcessingGateway } from './gateways/event-processing.gateway';
 
+
 @Injectable()
+/**
+ * Service responsible for managing Events CRUD operations and notifying
+ * connected clients via the EventProcessingGateway.
+ *
+ * Responsibilities:
+ * - Query, create, update and delete events in the database via TypeORM.
+ * - Emit real-time updates to clients after mutations.
+ */
 export class EventsService {
 
     constructor(
@@ -21,14 +30,37 @@ export class EventsService {
 
     ) { }
 
+     /**
+      * Retrieve all events.
+      * @returns Promise resolving to an array of {@link Events}.
+      */
     async getAll(): Promise<Events[]> {
         return this.eventsRepository.find();
     }
 
+     /**
+      * Retrieve a single event by its identifier.
+      * @param id Unique identifier of the event.
+      * @returns Promise resolving to the {@link Events} entity or null if not found.
+      */
     async getOne(id: number): Promise<Events | null> {
         return this.eventsRepository.findOneBy({ id });
     }
 
+     /**
+      * Create a new event.
+      *
+      * Validations:
+      * - startDate must be before endDate.
+      * - startDate must not be in the past.
+      *
+      * Side effects:
+      * - Emits the updated list of events to connected clients after creation.
+      *
+      * @param eventDto The data required to create the event.
+      * @returns Promise resolving to a success message object.
+      * @throws HttpException If validation fails or persistence errors occur.
+      */
     async create(eventDto: CreateEventDTO): Promise<{ message: string }> {
         
         try {
@@ -59,6 +91,17 @@ export class EventsService {
         }
     }
 
+     /**
+      * Update an existing event.
+      *
+      * Side effects:
+      * - Emits the updated list of events to connected clients after update.
+      *
+      * @param id The identifier of the event to update.
+      * @param eventDto Partial data to merge into the event.
+      * @returns Promise resolving to a success message object.
+      * @throws HttpException If the event is not found or update fails.
+      */
     async update(id: number, eventDto: UpdateEventDTO): Promise<{ message: string }> {
         try {
             
@@ -85,6 +128,16 @@ export class EventsService {
         }
     }
 
+     /**
+      * Delete an event by its identifier.
+      *
+      * Side effects:
+      * - Emits the updated list of events to connected clients after deletion.
+      *
+      * @param id The identifier of the event to delete.
+      * @returns Promise resolving to void.
+      * @throws HttpException If the event is not found or deletion fails.
+      */
     async delete(id: number): Promise<void> {
         
         try {

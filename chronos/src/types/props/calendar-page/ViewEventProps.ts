@@ -1,4 +1,4 @@
-import { EventBackend } from "@/types";
+import { EventBackend } from "@/types/props/calendar-page/EventBackendProps";
 
 export type ViewEventProps = {
   isOpen: boolean;

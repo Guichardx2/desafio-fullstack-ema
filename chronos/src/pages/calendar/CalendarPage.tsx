@@ -1,30 +1,50 @@
+//React and layout imports
 import { useState } from "react";
 import DefaultLayout from "@/layouts/default";
-import Calendar from "@/components/calendar/Calendar";
-import { useDisclosure } from "@heroui/modal";
-import { EventBackend } from "@/types";
-import { useFetch } from "@/hooks/useFetch";
-import formatDateTimeToISO from "@/utils/formatDateTimeToISO";
+
+//Services imports
 import axiosService from "@/services/axiosService";
-import { addToast } from "@heroui/toast";
-import { Button } from "@heroui/button";
-import AddNewEvent from "./components/AddNewEvent";
-import ViewEvent from "./components/ViewEvent";
+
+//Context and Type imports
 import { useWebSocketContext } from "@/contexts/WebSocketContext";
+import { EventBackend } from "@/types/props/calendar-page/EventBackendProps";
+
+//Components imports
+import Calendar from "@/components/calendar/Calendar";
+import ViewEvent from "./components/ViewEvent";
+import AddNewEvent from "./components/AddNewEvent";
 import InfoCard from "@/components/cards/InfoCard";
+
+//HeroUI imports
+import { useDisclosure } from "@heroui/modal";
+import { Button } from "@heroui/button";
 import {Spinner} from "@heroui/spinner";
 
+//Hooks imports
+import { useFetch } from "@/hooks/useFetch";
+import { useApiMutation } from "@/hooks/useApiMutation";
+
+//Utils imports
+import formatDateTimeToISO from "@/utils/formatDateTimeToISO";
+
+type EventPayload = Omit<EventBackend, "id">;
 export default function CalendarPage() {
-  const { data: events } = useFetch<EventBackend[]>(
-    `${import.meta.env.VITE_NEST_API_URL}/events/all`
-  );
+
+  //Hooks to making automatic GETS and MUTATIONS like POST, PATCH and DELETE
+  const { data: events } = useFetch<EventBackend[]>("/events/all");
+  const { mutate: mutateEvent, remove: removeEvent } = useApiMutation<EventPayload>("/events");
+
   const { webSocketEvents, connected } = useWebSocketContext();
   const currentEvents = webSocketEvents || events;
 
+  //Hooks to control modals provided by HeroUI
   const addDisclosure = useDisclosure();
   const viewDisclosure = useDisclosure();
+
+  //State to control the event being viewed or edited
   const [eventFormData, setEventFormData] = useState<EventBackend | null>(null);
 
+  //Empty event template to reset the form
   const emptyEvent: EventBackend = {
     id: null,
     title: "",
@@ -40,40 +60,32 @@ export default function CalendarPage() {
         <InfoCard 
         title="Conectando ao servidor..." 
         description="Aguarde enquanto tentamos conectar ao servidor de eventos em tempo real.">
-          <Spinner />
+          <Spinner color="secondary" />
         </InfoCard>
       </div>
     )
   }
 
-  async function fetchEvent(id: number) {
-    try {
-      const eventDataResponse = await axiosService.get(
-        `${import.meta.env.VITE_NEST_API_URL}/events/${id}`
-      );
-      const selected = { ...eventDataResponse.data, id } as EventBackend;
-      setEventFormData(selected);
-    } catch (error) {
-      console.error("Erro ao buscar evento:", error);
-    }
-  }
-
+  //Handle changes events
   const handleOpenAddModal = () => {
     setEventFormData(emptyEvent);
     addDisclosure.onOpen();
   };
 
-  const handleEventClick = (arg: any) => {
-  // Prefer backend id from groupId or extendedProps; fall back to parsing the id
-  const backendIdStr = arg.event.groupId || arg.event.extendedProps?.backendId || arg.event.id;
-  const id = Number(backendIdStr?.toString().replace(/-(start|end)$/i, ""));
+  //Gets event ID from calendar and fetch the event data from backend for viewing details
+  const handleEventClick = (arg: any) => { //arg is the event object from FullCalendar provided by the component
+  
+    const backendIdStr =
+      arg.event.groupId || arg.event.extendedProps?.backendId || arg.event.id;
+    const id = Number(backendIdStr?.toString().replace(/-(start|end)$/i, "")); // Regex to remove '-start' or '-end' suffix if present
 
-  if (!Number.isFinite(id)) return;
-  fetchEvent(id);
+    if (!Number.isFinite(id)) return;
+
+    fetchEvent(id);
     viewDisclosure.onOpen();
   };
 
-  //Handle changes
+  //Control form changes
   const handleEventFormChange = (field: keyof EventBackend, value: string) => {
     setEventFormData((prev) => {
       const eventData = prev ?? {
@@ -91,6 +103,7 @@ export default function CalendarPage() {
     });
   };
 
+  //Control form date changes
   const handleEventDateInputChange = (
     field: keyof Pick<EventBackend, "startDate" | "endDate">,
     dateTime: any
@@ -99,12 +112,32 @@ export default function CalendarPage() {
     handleEventFormChange(field, isoString);
   };
 
+  //Submit and actions
+  async function fetchEvent(id: number) {
+    try {
+      const eventDataResponse = await axiosService.get(
+        `${import.meta.env.VITE_NEST_API_URL}/events/${id}`
+      );
+      const selected = { ...eventDataResponse.data, id } as EventBackend;
+      setEventFormData(selected);
+    } catch (error) {
+      console.error("Erro ao buscar evento:", error);
+    }
+  }
+
+  //Opens the edit modal or view modal from view modal 
+  const handleEditFromView = () => {
+    viewDisclosure.onClose();
+    addDisclosure.onOpen();
+  };
+
+  //Handles form submission for creating or updating events using the mutation hook
   const handleEventFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!eventFormData) return;
 
-    const payload: Omit<EventBackend, "id"> = {
+    const payload: EventPayload = {
       title: eventFormData.title,
       description: eventFormData.description,
       startDate: eventFormData.startDate,
@@ -113,65 +146,31 @@ export default function CalendarPage() {
     };
 
     try {
-      if (eventFormData.id == null) {
-        await axiosService.post(
-          `${import.meta.env.VITE_NEST_API_URL}/events/create`,
-          payload
-        );
-        addToast({
-          title: "Evento",
-          description: "O evento foi criado com sucesso.",
-          color: "success",
-        });
-      } else {
-        await axiosService.patch(
-          `${import.meta.env.VITE_NEST_API_URL}/events/${eventFormData.id}`,
-          payload
-        );
-        addToast({
-          title: "Evento",
-          description: "O evento foi atualizado com sucesso.",
-          color: "success",
-        });
-      }
+      await mutateEvent(eventFormData.id, payload); // mutation hook to create or update the event
       addDisclosure.onClose();
       setEventFormData(emptyEvent);
+
     } catch (error) {
-      console.error("Erro ao salvar evento:", error);
-      addToast({
-        title: "Erro",
-        description: error instanceof Error ? error.message : 'Ocorreu um erro ao criar/atualizar o evento.',
-        color: "danger",
-      });
+
+      console.error("Falha ao salvar o evento:", error);
     }
   };
 
-  const handleEditFromView = () => {
-    viewDisclosure.onClose();
-    addDisclosure.onOpen();
-  };
-
+  //Handles event deletion from view modal using the mutation hook
   const handleDeleteFromView = async () => {
+    
     try {
       const id = eventFormData?.id;
+
       if (id == null) return;
-      await axiosService.del(
-        `${import.meta.env.VITE_NEST_API_URL}/events/${id}`
-      );
-      addToast({
-        title: "Evento",
-        description: "O evento foi excluído com sucesso.",
-        color: "success",
-      });
+
+      await removeEvent(id); // mutation hook to delete the event
+
       viewDisclosure.onClose();
       setEventFormData(emptyEvent);
+
     } catch (error) {
-      console.error("Erro ao excluir evento:", error);
-      addToast({
-        title: "Erro",
-        description: error instanceof Error ? error.message : 'Ocorreu um erro ao excluir o evento.',
-        color: "danger",
-      });
+      console.error("Falha ao deletar o evento:", error)
     }
   };
 
@@ -189,6 +188,8 @@ export default function CalendarPage() {
               Adicionar Evento
             </Button>
           </div>
+
+          {/* Calendar component */}
           <div className="flex-1 min-h-0">
           <Calendar
             events={
@@ -217,6 +218,8 @@ export default function CalendarPage() {
           />
           </div>
         </div>
+
+        {/* Render modals */}
         <AddNewEvent
           isOpen={addDisclosure.isOpen}
           onOpenChange={addDisclosure.onOpenChange}

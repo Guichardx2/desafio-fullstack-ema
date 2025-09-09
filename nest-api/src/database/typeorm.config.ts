@@ -2,7 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import 'dotenv/config';
 
-
+//Database configuration from .env file
 const configService = new ConfigService();
 
 export const typeOrmConfig: TypeOrmModuleOptions = {

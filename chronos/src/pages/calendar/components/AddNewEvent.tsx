@@ -1,5 +1,5 @@
 import EventModal from "@/components/modal/EventModal";
-import { AddNewEventProps } from "@/types/props/calendar/AddNewEventProps";
+import { AddNewEventProps } from "@/types/props/calendar-page/AddNewEventProps";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { DateInput } from "@heroui/date-input";

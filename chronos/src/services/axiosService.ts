@@ -8,7 +8,7 @@ interface Params {
 }
 
 
-//Configuyração Axios com retry
+//Axios configuration with retry
 const axiosInstance: AxiosInstance = axios.create({
     timeout: 15000,
     headers: {
@@ -19,7 +19,7 @@ const axiosInstance: AxiosInstance = axios.create({
 axiosRetry(axiosInstance, {
     retries: 3,
     retryDelay: (retryCount, error) => {
-        console.warn(`Retry attempt ${retryCount} for ${error.config?.url || 'unknown URL'} due to ${error.message}`);
+        console.warn(`Tentativa ${retryCount} para ${error.config?.url || 'URL desconhecida'} devido a ${error.message}`);
         return axiosRetry.exponentialDelay(retryCount, error, 1000);
     },
     retryCondition: (error: AxiosError) => {
@@ -36,10 +36,11 @@ axiosRetry(axiosInstance, {
 axiosInstance.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
-        console.error(`Axios Error: ${error.message}`, error.stack);
+        console.error(`Erro Axios: ${error.message}`, error.stack);
         if (error.response) {
-            console.error(`Status: ${error.response.status} Data: ${JSON.stringify(error.response.data)}`);
-            // If backend provided a message, prefer it so callers can show it
+            
+            console.error(`Status: ${error.response.status} Dados: ${JSON.stringify(error.response.data)}`);
+        
             const backendMessage = (error.response.data as any)?.message;
             if (backendMessage) {
                 if (Array.isArray(backendMessage)) {
@@ -51,7 +52,7 @@ axiosInstance.interceptors.response.use(
                 }
             }
         } else if (error.request) {
-            console.error(`No response received: ${error.request}`);
+            console.error(`Nenhuma reposta recebida: ${error.request}`);
         }
 
         // Preserve the original AxiosError so consumers can inspect response.data
@@ -59,7 +60,7 @@ axiosInstance.interceptors.response.use(
     }
 );
 
-
+// Basic CRUD methods
 const get = async <T = any>(
     url: string,
     params: Params = {}

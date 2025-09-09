@@ -1,5 +1,5 @@
 import EventModal from "@/components/modal/EventModal";
-import { ViewEventProps } from "@/types/props/calendar/ViewEventProps";
+import { ViewEventProps } from "@/types/props/calendar-page/ViewEventProps";
 import { Button } from "@heroui/button";
 import formatISOToDisplay from "@/utils/formatISOToDisplay";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
