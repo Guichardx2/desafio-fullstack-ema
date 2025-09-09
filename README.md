@@ -30,18 +30,18 @@ O Chronos é uma aplicação que consiste ser uma plataforma simples para gerenc
 ```bash
 cd ./desafio-fullstack-ema
 ````
-Recomendação: instalar o pnpm via npm:
+2. Recomendação: instalar o pnpm via npm:
 ```bash
 npm install -g pnpm@latest-10
  ```
 
-Para instalar as dependências e rodar o frontend:
+3. Para instalar as dependências e rodar o frontend:
 ```bash
 cd ./chronos
 pnpm install
 pnpm run dev
 ```
-Para instalar as dependências e rodar o backend:
+4. Para instalar as dependências e rodar o backend:
 ```bash
 cd ./nest-api
 pnpm install
@@ -52,11 +52,22 @@ pnpm run start:dev
 ```
 
 ## IMPORTANTE:
-Não esqueça de renomear o arquivo .env.example para .env e preencher as variaveis locais para o banco de dados.
+Não esqueça de renomear o arquivo ```.env.example``` para ```.env ``` e preencher as variaveis locais para o banco de dados.
 
-Exemplo de preenchimento:
+Exemplo de preenchimento backend:
 ```bash
+DB_HOST=nome do host
+DB_PORT=sua porta
+DB_USERNAME=user do banco
+DB_PASSWORD=sua senha local
+DB_DATABASE=nome do banco
+DB_TIMEZONE=timezone (-03:00)
+```
 
+Preenchimento do frontend:
+```bash
+VITE_NEST_API_URL:localhost:3000
+VITE_NEST_WEBSOCKET_URL:ws/localhost:3000/events/data
 ```
 
 ## O projeto também conta com API Automation test montados com Jest:
@@ -65,3 +76,5 @@ Rode no backend:
 ```bash
 pnpm test 
 ```
+
+A API também tem sua documentação disponível acessando a rota ```/api ```
