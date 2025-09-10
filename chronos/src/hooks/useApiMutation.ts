@@ -3,8 +3,18 @@ import axiosService from "@/services/axiosService";
 import { addToast } from "@heroui/toast";
 
 type UseApiMutationResult<T> = {
-  mutate: (id: number | string | null, payload: Partial<T>) => Promise<void>;
-  remove: (id: number | string) => Promise<void>;
+  mutate: (
+    id: number | string | null,
+    payload: Partial<T>,
+    successMessage?: string,
+    errorMessage?: string
+  ) => Promise<void>;
+  get: (id: number | string) => Promise<T>;
+  remove: (
+    id: number | string,
+    successMessage?: string,
+    errorMessage?: string
+  ) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
 };
@@ -47,30 +57,57 @@ export const useApiMutation = <T>(baseUrl: string): UseApiMutationResult<T> => {
 
   const mutate = async (
     id: number | string | null,
-    payload: Partial<T>
+    payload: Partial<T>,
+    successMessage?: string,
+    errorMessage?: string
   ) => {
     if (id === null || id === undefined) {
       await executeMutation(
         () => axiosService.post(`${VITE_API_URL}${baseUrl}/create`, payload),
-        "Item criado com sucesso.",
-        "Ocorreu um erro ao criar o item."
+        successMessage || "Evento criado com sucesso.",
+        errorMessage || "Ocorreu um erro ao criar o evento."
       );
     } else {
       await executeMutation(
         () => axiosService.patch(`${VITE_API_URL}${baseUrl}/${id}`, payload),
-        "Item atualizado com sucesso.",
-        "Ocorreu um erro ao atualizar o item."
+        successMessage || "Evento atualizado com sucesso.",
+        errorMessage || "Ocorreu um erro ao atualizar o evento."
       );
     }
   };
 
-  const remove = async (id: number | string) => {
+  const get = async (id: number | string): Promise<T> => {
+    setIsLoading(true);
+    setError(null);
+    try {
+
+      const response = await axiosService.get(`${VITE_API_URL}${baseUrl}/${id}`);
+      return response.data as T;
+
+    } catch (err) {
+
+      const errorMessageText =
+        err instanceof Error ? err.message : "Ocorreu um erro ao buscar o evento.";
+      setError(err instanceof Error ? err : new Error(String(err)));
+      addToast({
+        title: "Erro",
+        description: errorMessageText,
+        color: "danger",
+      });
+      throw err;
+
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const remove = async (id: number | string, successMessage?: string, errorMessage?: string) => {
     await executeMutation(
       () => axiosService.del(`${VITE_API_URL}${baseUrl}/${id}`),
-      "Item excluído com sucesso.",
-      "Ocorreu um erro ao excluir o item."
+      successMessage || "Evento excluído com sucesso.",
+      errorMessage || "Ocorreu um erro ao excluir o evento."
     );
   };
 
-  return { mutate, remove, isLoading, error };
+  return { mutate, get, remove, isLoading, error };
 };

@@ -10,7 +10,9 @@ export class UpdateEventDTO {
     @IsString({
         message: 'O título deve ser uma string',
     })
-    @Length(1, 100)
+    @Length(1, 100, {
+        message: 'O título deve conter no máximo 100 caracteres',
+    })
     @IsOptional()
     title?: string;
 
@@ -21,7 +23,9 @@ export class UpdateEventDTO {
     @IsString({
         message: 'A descrição deve ser uma string',
     })
-    @Length(5, 500)
+    @Length(5, 500, {
+        message: 'A descrição deve conter pelo menos 5 caracteres e no máximo 500',
+    })
     @IsOptional()
     description?: string;
 
@@ -54,7 +58,9 @@ export class UpdateEventDTO {
     @IsString({
         message: 'O local deve ser uma string',
     })
-    @Length(1, 100)
+    @Length(1, 100, {
+        message: 'O local deve conter no máximo 100 caracteres',
+    })
     @IsOptional()
     location?: string;
 }

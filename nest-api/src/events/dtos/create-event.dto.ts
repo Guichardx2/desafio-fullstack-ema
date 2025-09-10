@@ -11,8 +11,12 @@ export class CreateEventDTO {
     @IsString({
         message: 'O título deve ser uma string',
     })
-    @Length(1, 100)
-    @IsNotEmpty()
+    @Length(1, 100, {
+        message: 'O título deve conter no máximo 100 caracteres',
+    })
+    @IsNotEmpty({
+        message: 'O título não pode ser vazio',
+    })
     title: string;
 
     @ApiProperty({
@@ -22,8 +26,12 @@ export class CreateEventDTO {
     @IsString({
         message: 'A descrição deve ser uma string',
     })
-    @IsNotEmpty()
-    @Length(5, 500)
+    @IsNotEmpty({
+        message: 'A descrição não pode ser vazia',
+    })
+    @Length(5, 500, {
+        message: 'A descrição deve conter pelo menos 5 caracteres e no máximo 500',
+    })
     description: string;
 
     @ApiProperty({
@@ -34,7 +42,9 @@ export class CreateEventDTO {
         message: 'A data de início deve ser uma data válida',
     })
     @Type(() => Date)
-    @IsNotEmpty()
+    @IsNotEmpty({
+        message: 'A data de início não pode ser vazia',
+    })
     startDate: Date;
 
     @ApiProperty({
@@ -45,7 +55,9 @@ export class CreateEventDTO {
         message: 'A data de término deve ser uma data válida',
     })
     @Type(() => Date)
-    @IsNotEmpty()
+    @IsNotEmpty({
+        message: 'A data de término não pode ser vazia',
+    })
     endDate: Date;
 
     @ApiProperty({
@@ -55,7 +67,11 @@ export class CreateEventDTO {
     @IsString({
         message: 'O local deve ser uma string',
     })
-    @IsNotEmpty()
-    @Length(1, 100)
+    @IsNotEmpty({
+        message: 'O local não pode ser vazio',
+    })
+    @Length(1, 100, {
+        message: 'O local deve conter no máximo 100 caracteres',
+    })
     location: string;
 }

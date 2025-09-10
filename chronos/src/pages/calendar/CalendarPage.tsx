@@ -2,9 +2,6 @@
 import { useState } from "react";
 import DefaultLayout from "@/layouts/default";
 
-//Services imports
-import axiosService from "@/services/axiosService";
-
 //Context and Type imports
 import { useWebSocketContext } from "@/contexts/WebSocketContext";
 import { EventBackend } from "@/types/props/calendar-page/EventBackendProps";
@@ -32,7 +29,7 @@ export default function CalendarPage() {
 
   //Hooks to making automatic GETS and MUTATIONS like POST, PATCH and DELETE
   const { data: events } = useFetch<EventBackend[]>("/events/all");
-  const { mutate: mutateEvent, remove: removeEvent } = useApiMutation<EventPayload>("/events");
+  const { mutate: mutateEvent, remove: removeEvent, get: getEvent } = useApiMutation<EventBackend>("/events");
 
   const { webSocketEvents, connected } = useWebSocketContext();
   const currentEvents = webSocketEvents || events;
@@ -73,7 +70,7 @@ export default function CalendarPage() {
   };
 
   //Gets event ID from calendar and fetch the event data from backend for viewing details
-  const handleEventClick = (arg: any) => { //arg is the event object from FullCalendar provided by the component
+  const handleEventClick = async (arg: any) => { // agora assíncrono para aguardar o get
   
     const backendIdStr =
       arg.event.groupId || arg.event.extendedProps?.backendId || arg.event.id;
@@ -81,8 +78,14 @@ export default function CalendarPage() {
 
     if (!Number.isFinite(id)) return;
 
-    fetchEvent(id);
-    viewDisclosure.onOpen();
+    try {
+      const eventData = await getEvent(id);
+      const selected = { ...eventData, id } as EventBackend;
+      setEventFormData(selected);
+      viewDisclosure.onOpen();
+    } catch (error) {
+      console.error("Falha ao buscar evento:", error);
+    }
   };
 
   //Control form changes
@@ -113,17 +116,6 @@ export default function CalendarPage() {
   };
 
   //Submit and actions
-  async function fetchEvent(id: number) {
-    try {
-      const eventDataResponse = await axiosService.get(
-        `${import.meta.env.VITE_NEST_API_URL}/events/${id}`
-      );
-      const selected = { ...eventDataResponse.data, id } as EventBackend;
-      setEventFormData(selected);
-    } catch (error) {
-      console.error("Erro ao buscar evento:", error);
-    }
-  }
 
   //Opens the edit modal or view modal from view modal 
   const handleEditFromView = () => {

@@ -43,7 +43,7 @@ const AddNewEvent = ({
           maxLength={500}
           required
         />
-        <div className="flex w-full flex-1 gap-4">
+  <div className="flex w-full flex-1 gap-4 flex-col md:flex-row">
           <DateInput
             label="Início do evento"
             labelPlacement="outside"
