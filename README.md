@@ -77,4 +77,8 @@ Rode no backend:
 pnpm test 
 ```
 
+## Requisitos não obrigatórios tentados:
+- Testes unitários e API Automation 
+- Responsividade 
+
 A API também tem sua documentação disponível acessando a rota ```/api ```
