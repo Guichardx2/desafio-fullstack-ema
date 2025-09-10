@@ -76,7 +76,7 @@ DB_TIMEZONE='-03:00'
 Preenchimento do frontend:
 ```bash
 VITE_NEST_API_URL:localhost:3000
-VITE_NEST_WEBSOCKET_URL:ws/localhost:3000/events/data
+VITE_NEST_WEBSOCKET_URL:ws://localhost:3000/events/data
 ```
 
 ## O projeto também conta com API Automation e Unit tests montados com Jest:
