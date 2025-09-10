@@ -54,14 +54,14 @@ pnpm run start:dev
 ## IMPORTANTE:
 Não esqueça de renomear o arquivo ```.env.example``` para ```.env ``` e preencher as variaveis locais para o banco de dados.
 
-Exemplo de preenchimento backend:
+Preenchimento do backend para o banco deve ser:
 ```bash
-DB_HOST=nome do host
-DB_PORT=sua porta
-DB_USERNAME=user do banco
-DB_PASSWORD=sua senha local
-DB_DATABASE=nome do banco
-DB_TIMEZONE=timezone (-03:00)
+DB_HOST='awsemachallenge.c9mqg8ai2huz.us-east-2.rds.amazonaws.com'
+DB_PORT=3306
+DB_USERNAME='admin'
+DB_PASSWORD='passphrasethatidkforwhat'
+DB_DATABASE='ema_challenge'
+DB_TIMEZONE='-03:00'
 ```
 
 Preenchimento do frontend:
@@ -77,7 +77,7 @@ Rode no backend:
 pnpm test 
 ```
 
-## Requisitos não obrigatórios tentados:
+## Requisitos não obrigatórios ojetivados:
 - Testes unitários e API Automation 
 - Responsividade 
 
