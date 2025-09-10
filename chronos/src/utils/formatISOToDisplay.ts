@@ -5,7 +5,7 @@ export default function formatISOToDisplay(
 ): string {
   if (!isoString) return "";
   const d = new Date(isoString);
-  if (isNaN(d.getTime())) return isoString; // fallback if invalid
+  if (isNaN(d.getTime())) return isoString;
 
   const options: Intl.DateTimeFormatOptions = {
     day: "2-digit",
