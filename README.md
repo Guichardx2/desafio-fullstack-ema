@@ -63,6 +63,15 @@ DB_PASSWORD='passphrasethatidkforwhat'
 DB_DATABASE='ema_challenge'
 DB_TIMEZONE='-03:00'
 ```
+Ou uma instância local:
+```bash
+DB_HOST='seu host name'
+DB_PORT=3306
+DB_USERNAME='seu user name'
+DB_PASSWORD='sua senha local'
+DB_DATABASE='nome do banco'
+DB_TIMEZONE='-03:00'
+```
 
 Preenchimento do frontend:
 ```bash
