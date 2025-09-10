@@ -2,11 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-import { EventsService } from 'src/events/events.service';
-import Events from 'src/events/events.entity';
-import { EventProcessingGateway } from 'src/events/gateways/event-processing.gateway';
-import { CreateEventDTO } from 'src/events/dtos/create-event.dto';
-import { UpdateEventDTO } from 'src/events/dtos/update-event.dto';
+import { EventsService } from '../../events/events.service';
+import Events from '../../events/events.entity';
+import { EventProcessingGateway } from '../../events/gateways/event-processing.gateway';
+import { CreateEventDTO } from '../../events/dtos/create-event.dto';
+import { UpdateEventDTO } from '../../events/dtos/update-event.dto';
 
 describe('EventsService (unit)', () => {
   let service: EventsService;
