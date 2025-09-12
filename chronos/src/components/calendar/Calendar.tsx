@@ -10,7 +10,7 @@ export default function Calendar(props: Readonly<CalendarProps>) {
 
     <FullCalendar
       eventClassNames={'cursor-pointer'}
-      dayHeaderClassNames={'bg-purple-100 text-black dark:bg-purple-300 font-semibold'}
+      dayHeaderClassNames={'bg-purple-100 text-black dark:bg-[#241535] dark:text-white font-semibold'}
       moreLinkClassNames={'bg-purple-100 text-purple-700 rounded'}
       dayCellClassNames={'hover:bg-purple-50 dark:hover:bg-[#27272a] dark:bg-[#18181b] dark:text-white transition-colors'}
       plugins={[dayGridPlugin, interactionPlugin, listPlugin]}

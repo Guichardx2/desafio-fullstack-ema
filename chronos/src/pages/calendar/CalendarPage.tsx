@@ -1,6 +1,7 @@
 //React and layout imports
 import { useState } from "react";
 import DefaultLayout from "@/layouts/default";
+import { CalendarDaysIcon } from "@heroicons/react/24/outline";
 
 //Context and Type imports
 import { useWebSocketContext } from "@/contexts/WebSocketContext";
@@ -175,40 +176,40 @@ export default function CalendarPage() {
               onPress={handleOpenAddModal}
               variant="flat"
               color="secondary"
-              className=""
+              endContent={<CalendarDaysIcon className="size-6"/>}
             >
               Adicionar Evento
             </Button>
           </div>
 
           {/* Calendar component */}
-          <div className="flex-1 min-h-0">
-          <Calendar
-            events={
+            <div className="flex-1 min-h-0">
+            <Calendar
+              events={
               Array.isArray(currentEvents)
                 ? currentEvents.flatMap((event) => [
-                    {
-                      id: `${event.id}-start`,
-                      groupId: String(event.id),
-                      title: `${event.title} (Início)`,
-                      start: event.startDate,
-                      allDay: false,
-                      extendedProps: { backendId: event.id },
-                    },
-                    {
-                      id: `${event.id}-end`,
-                      groupId: String(event.id),
-                      title: `${event.title} (Fim)`,
-                      start: event.endDate,
-                      allDay: false,
-                      extendedProps: { backendId: event.id },
-                    },
-                  ])
+                  {
+                  id: `${event.id}-start`,
+                  groupId: String(event.id),
+                  title: `${event.title} (Início)`,
+                  start: event.startDate,
+                  allDay: false,
+                  extendedProps: { backendId: event.id },
+                  },
+                  {
+                  id: `${event.id}-end`,
+                  groupId: String(event.id),
+                  title: `${event.title} (Fim)`,
+                  start: event.endDate,
+                  allDay: false,
+                  extendedProps: { backendId: event.id },
+                  },
+                ])
                 : []
-            }
-            eventClick={handleEventClick}
-          />
-          </div>
+              }
+              eventClick={handleEventClick}
+            />
+            </div>
         </div>
 
         {/* Render modals */}

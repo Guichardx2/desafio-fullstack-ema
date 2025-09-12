@@ -86,7 +86,7 @@ Rode no backend:
 pnpm test 
 ```
 
-## Requisitos não obrigatórios objetivados:
+## Requisitos não obrigatórios almejados:
 - Testes unitários e API Automation 
 - Responsividade 
 
